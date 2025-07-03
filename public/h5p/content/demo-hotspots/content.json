@@ -1,0 +1,55 @@
+{
+  "iconType": "icon",
+  "icon": {
+    "path": "images/icon.png",
+    "mime": "image/png",
+    "copyright": {
+      "license": "U"
+    },
+    "width": 300,
+    "height": 200
+  },
+  "hotspots": [
+    {
+      "position": {
+        "x": 25,
+        "y": 30,
+        "legacyPositioning": false
+      },
+      "alwaysFullscreen": false,
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p>Ceci est un hotspot interactif sur Vue.js</p>"
+          },
+          "subContentId": "subContent_1"
+        }
+      ],
+      "header": "Vue.js Framework"
+    },
+    {
+      "position": {
+        "x": 75,
+        "y": 60,
+        "legacyPositioning": false
+      },
+      "alwaysFullscreen": false,
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p>Découvrez les composants Vue.js</p>"
+          },
+          "subContentId": "subContent_2"
+        }
+      ],
+      "header": "Composants"
+    }
+  ],
+  "hotspotSettings": {
+    "hotspot": "icon",
+    "hotspotIcon": "plus",
+    "color": "#3498db"
+  }
+}

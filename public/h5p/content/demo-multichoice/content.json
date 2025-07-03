@@ -1,0 +1,55 @@
+{
+  "question": "<p>Quel est le principal avantage de Vue.js ?</p>",
+  "answers": [
+    {
+      "correct": true,
+      "text": "<div>Framework progressif et facile à apprendre</div>",
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Excellent ! Vue.js est effectivement un framework progressif.",
+        "notChosenFeedback": ""
+      }
+    },
+    {
+      "correct": false,
+      "text": "<div>Complexité élevée</div>",
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Non, Vue.js se distingue par sa simplicité.",
+        "notChosenFeedback": ""
+      }
+    },
+    {
+      "correct": false,
+      "text": "<div>Uniquement pour les grandes applications</div>",
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Non, Vue.js est adapté aux projets de toutes tailles.",
+        "notChosenFeedback": ""
+      }
+    }
+  ],
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 100,
+      "feedback": "Merci d'avoir répondu à cette question !"
+    }
+  ],
+  "UI": {
+    "checkAnswerButton": "Vérifier",
+    "submitAnswerButton": "Valider",
+    "showSolutionButton": "Voir la solution",
+    "tryAgainButton": "Réessayer"
+  },
+  "behaviour": {
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "enableCheckButton": true,
+    "type": "auto",
+    "singlePoint": false,
+    "randomAnswers": false,
+    "passPercentage": 50,
+    "showScorePoints": true
+  }
+}

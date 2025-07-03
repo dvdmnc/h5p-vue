@@ -1,0 +1,91 @@
+{
+  "question": "<p>Quelle est la capitale de la France ?</p>",
+  "answers": [
+    {
+      "correct": true,
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Correct ! Paris est bien la capitale de la France.",
+        "notChosenFeedback": "Paris est la capitale de la France."
+      },
+      "text": "<div>Paris</div>"
+    },
+    {
+      "correct": false,
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Incorrect. Lyon est une grande ville française mais pas la capitale.",
+        "notChosenFeedback": ""
+      },
+      "text": "<div>Lyon</div>"
+    },
+    {
+      "correct": false,
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Incorrect. Marseille est une grande ville française mais pas la capitale.",
+        "notChosenFeedback": ""
+      },
+      "text": "<div>Marseille</div>"
+    },
+    {
+      "correct": false,
+      "tipsAndFeedback": {
+        "tip": "",
+        "chosenFeedback": "Incorrect. Toulouse est une grande ville française mais pas la capitale.",
+        "notChosenFeedback": ""
+      },
+      "text": "<div>Toulouse</div>"
+    }
+  ],
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 100,
+      "feedback": "Vous avez terminé la question !"
+    }
+  ],
+  "UI": {
+    "checkAnswerButton": "Vérifier",
+    "submitAnswerButton": "Valider",
+    "showSolutionButton": "Voir la solution",
+    "tryAgainButton": "Réessayer",
+    "tipsLabel": "Afficher l'indice",
+    "scoreBarLabel": "Vous avez obtenu :num sur :total points",
+    "tipAvailable": "Indice disponible",
+    "feedbackAvailable": "Commentaire disponible",
+    "readFeedback": "Lire le commentaire",
+    "wrongAnswer": "Mauvaise réponse",
+    "correctAnswer": "Bonne réponse",
+    "shouldCheck": "Vous devriez cocher cette case",
+    "shouldNotCheck": "Vous ne devriez pas cocher cette case",
+    "noInput": "Veuillez répondre avant de voir la solution",
+    "a11yCheck": "Vérifier les réponses. Les réponses seront marquées comme correctes, incorrectes ou non répondues.",
+    "a11yShowSolution": "Afficher la solution. La tâche sera marquée avec sa solution correcte.",
+    "a11yRetry": "Recommencer la tâche. Réinitialiser toutes les réponses et recommencer la tâche."
+  },
+  "behaviour": {
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "enableCheckButton": true,
+    "type": "auto",
+    "singleAnswer": true,
+    "autoCheck": false,
+    "passPercentage": 50,
+    "showScorePoints": true
+  },
+  "confirmCheckDialog": {
+    "enable": false,
+    "header": "Terminer ?",
+    "body": "Êtes-vous sûr de vouloir terminer ?",
+    "cancelLabel": "Annuler",
+    "confirmLabel": "Terminer"
+  },
+  "confirmRetryDialog": {
+    "enable": false,
+    "header": "Recommencer ?",
+    "body": "Êtes-vous sûr de vouloir recommencer ?",
+    "cancelLabel": "Annuler",
+    "confirmLabel": "Recommencer"
+  }
+}

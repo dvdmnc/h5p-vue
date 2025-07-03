@@ -1,0 +1,42 @@
+{
+  "title": "Trier les éléments",
+  "language": "fr",
+  "mainLibrary": "H5P.DragText", 
+  "embedTypes": ["div"],
+  "license": "U",
+  "defaultLanguage": "fr",
+  "authors": [],
+  "changes": [],
+  "preloadedDependencies": [
+    {
+      "machineName": "FontAwesome",
+      "majorVersion": 4,
+      "minorVersion": 5
+    },
+    {
+      "machineName": "H5P.JoubelUI",
+      "majorVersion": 1,
+      "minorVersion": 3
+    },
+    {
+      "machineName": "H5P.Transition", 
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
+      "machineName": "H5P.FontIcons",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
+      "machineName": "H5P.Question",
+      "majorVersion": 1,
+      "minorVersion": 5
+    },
+    {
+      "machineName": "H5P.DragText",
+      "majorVersion": 1,
+      "minorVersion": 10
+    }
+  ]
+}

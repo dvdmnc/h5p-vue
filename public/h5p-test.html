@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5P Standalone Test</title>
+    <link rel="stylesheet" href="/h5p/frame.css" />
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f5f5f5; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        .h5p-test { 
+            min-height: 400px; 
+            border: 1px solid #ddd; 
+            margin: 20px 0; 
+            padding: 20px; 
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.loading { background: #e3f2fd; color: #1976d2; }
+        .status.success { background: #e8f5e8; color: #2e7d32; }
+        .status.error { background: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 H5P Standalone Test</h1>
+        <p>Test direct de l'intégration H5P Standalone sans Vue.js</p>
+        
+        <div id="status" class="status loading">
+            🔄 Chargement de H5P...
+        </div>
+        
+        <div id="h5p-test" class="h5p-test"></div>
+        
+        <div class="controls">
+            <button onclick="testMultipleChoice()">Test Multiple Choice</button>
+            <button onclick="testFillBlanks()">Test Fill in Blanks</button>
+            <button onclick="clearTest()">Clear</button>
+        </div>
+    </div>
+
+    <!-- H5P Scripts -->
+    <script src="/h5p/frame.js"></script>
+    <script type="module">
+        import { H5P } from 'h5p-standalone';
+        
+        let currentInstance = null;
+        const statusDiv = document.getElementById('status');
+        const testDiv = document.getElementById('h5p-test');
+        
+        function updateStatus(message, type = 'loading') {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+        
+        async function loadH5PContent(contentPath, description) {
+            try {
+                updateStatus(`🔄 Chargement de ${description}...`, 'loading');
+                
+                // Clear previous content
+                testDiv.innerHTML = '';
+                
+                const options = {
+                    h5pJsonPath: contentPath,
+                    frameJs: '/h5p/frame.js',
+                    frameCss: '/h5p/frame.css',
+                    librariesPath: '/h5p/libraries',
+                    frame: false,
+                    copyright: false,
+                    embed: false,
+                    icon: false,
+                    fullscreen: false,
+                    export: false
+                };
+                
+                console.log('H5P options:', options);
+                
+                currentInstance = new H5P(testDiv, options);
+                
+                // Wait a bit for loading
+                setTimeout(() => {
+                    updateStatus(`✅ ${description} chargé avec succès`, 'success');
+                }, 2000);
+                
+            } catch (error) {
+                console.error('H5P Error:', error);
+                updateStatus(`❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+        
+        window.testMultipleChoice = () => {
+            loadH5PContent('/h5p/content/demo-multichoice', 'Question à choix multiples');
+        };
+        
+        window.testFillBlanks = () => {
+            loadH5PContent('/h5p/content/demo-blanks', 'Texte à trous');
+        };
+        
+        window.clearTest = () => {
+            testDiv.innerHTML = '';
+            updateStatus('🔄 Prêt pour un nouveau test', 'loading');
+        };
+        
+        // Auto-load first test
+        setTimeout(() => {
+            testMultipleChoice();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5P Standalone Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        #h5p-container {
+            min-height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>H5P Standalone Integration Test</h1>
+    <p>This page tests H5P standalone integration with our local content and libraries.</p>
+    
+    <div class="test-container">
+        <h2>Multiple Choice Question</h2>
+        <div id="h5p-container">
+            <div class="loading">Loading H5P content...</div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { H5P } from '/node_modules/h5p-standalone/dist/main.bundle.js';
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const el = document.getElementById('h5p-container');
+            
+            const options = {
+                h5pJsonPath: '/h5p/content/demo-multichoice',
+                frameJs: '/h5p/frame.bundle.js',
+                frameCss: '/h5p/styles/h5p.css',
+                librariesPath: '/h5p/libraries',
+                frame: false,
+                copyright: false,
+                icon: false,
+                fullscreen: false,
+                export: false,
+                embed: false
+            };
+
+            console.log('Loading H5P with options:', options);
+
+            new H5P(el, options)
+                .then((instance) => {
+                    console.log('H5P loaded successfully:', instance);
+                    
+                    // Listen for xAPI events
+                    if (window.H5P && window.H5P.externalDispatcher) {
+                        window.H5P.externalDispatcher.on('xAPI', function(event) {
+                            console.log('xAPI event:', event);
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('H5P loading failed:', error);
+                    el.innerHTML = `<div style="color: red; padding: 20px;">
+                        Error loading H5P: ${error.message}
+                    </div>`;
+                });
+        });
+    </script>
+</body>
+</html>

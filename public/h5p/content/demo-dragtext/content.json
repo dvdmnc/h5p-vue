@@ -1,0 +1,41 @@
+{
+  "textField": "Organisez ces étapes du développement web dans le bon ordre : *Vue.js|React|Angular|jQuery*",
+  "words": [
+    {
+      "text": "jQuery",
+      "correct": "jQuery",
+      "feedback": "jQuery était l'une des premières bibliothèques JavaScript populaires."
+    },
+    {
+      "text": "Angular",
+      "correct": "Angular", 
+      "feedback": "Angular est un framework complet développé par Google."
+    },
+    {
+      "text": "React",
+      "correct": "React",
+      "feedback": "React est une bibliothèque développée par Facebook."
+    },
+    {
+      "text": "Vue.js",
+      "correct": "Vue.js",
+      "feedback": "Vue.js est un framework progressif moderne."
+    }
+  ],
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 100,
+      "feedback": "Parfait ! Vous maîtrisez l'évolution des frameworks JavaScript."
+    }
+  ],
+  "checkAnswer": "Vérifier",
+  "tryAgain": "Recommencer",
+  "showSolution": "Afficher la solution",
+  "behaviour": {
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "enableCheckButton": true,
+    "instantFeedback": false
+  }
+}

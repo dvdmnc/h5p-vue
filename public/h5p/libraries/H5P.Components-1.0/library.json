@@ -1,0 +1,14 @@
+{
+  "title": "Components",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 0,
+  "machineName": "H5P.Components",
+  "author": "H5P Core Team",
+  "preloadedJs": [
+    {
+      "path": "js/components.js"
+    }
+  ]
+}

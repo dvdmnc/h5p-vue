@@ -1,0 +1,90 @@
+{
+  "scoreShow": "Check",
+  "tryAgain": "Retry",
+  "scoreBar": "You got :num out of :total points",
+  "a11yCheck": "Check the answers. The responses will be marked as correct, incorrect, or unanswered.",
+  "a11yRetry": "Retry the task. Reset all responses and start the task over again.",
+  "question": {
+    "settings": {
+      "size": {
+        "width": 620,
+        "height": 310
+      }
+    },
+    "task": {
+      "elements": [
+        {
+          "x": 50,
+          "y": 50,
+          "width": 150,
+          "height": 50,
+          "dropZones": [],
+          "type": {
+            "library": "H5P.Text 1.1",
+            "params": {
+              "text": "Vue.js"
+            },
+            "subContentId": "e8fd71b8-7b6e-4b3e-8b7e-2d1f3a4b5c6d"
+          }
+        },
+        {
+          "x": 50,
+          "y": 120,
+          "width": 150,
+          "height": 50,
+          "dropZones": [],
+          "type": {
+            "library": "H5P.Text 1.1",
+            "params": {
+              "text": "React"
+            },
+            "subContentId": "f9fe82c9-8c7f-5c4f-9c8f-3e2f4b5c6d7e"
+          }
+        },
+        {
+          "x": 300,
+          "y": 50,
+          "width": 200,
+          "height": 80,
+          "dropZones": ["0", "1"],
+          "type": {
+            "library": "H5P.Text 1.1",
+            "params": {
+              "text": "Frameworks JavaScript"
+            },
+            "subContentId": "a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6"
+          }
+        }
+      ],
+      "dropZones": [
+        {
+          "x": 300,
+          "y": 50,
+          "width": 200,
+          "height": 80,
+          "correctElements": ["0", "1"],
+          "showLabel": true,
+          "backgroundOpacity": 20,
+          "tipsAndFeedback": {
+            "tip": ""
+          },
+          "single": false,
+          "autoAlign": true
+        }
+      ]
+    }
+  },
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 100,
+      "feedback": "Excellent ! Vous avez bien identifié les frameworks JavaScript."
+    }
+  ],
+  "behaviour": {
+    "enableRetry": true,
+    "enableCheckButton": true,
+    "enableSolutionsButton": true,
+    "instantFeedback": false
+  }
+}

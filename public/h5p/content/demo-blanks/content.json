@@ -1,0 +1,30 @@
+{
+  "text": "Vue.js est un framework JavaScript *progressif* qui permet de développer des applications *interactives* facilement.",
+  "questions": [
+    "progressif",
+    "interactives"
+  ],
+  "overallFeedback": [
+    {
+      "from": 0,
+      "to": 100,
+      "feedback": "Bien joué !"
+    }
+  ],
+  "UI": {
+    "checkAnswerButton": "Vérifier",
+    "submitAnswerButton": "Valider",
+    "showSolutionButton": "Voir la solution",
+    "tryAgainButton": "Réessayer"
+  },
+  "behaviour": {
+    "enableRetry": true,
+    "enableSolutionsButton": true,
+    "autoCheck": false,
+    "caseSensitive": false,
+    "showSolutionsRequiresInput": true,
+    "separateLines": false,
+    "confirmCheckDialog": false,
+    "acceptSpellingErrors": false
+  }
+}

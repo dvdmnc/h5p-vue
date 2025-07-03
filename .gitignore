@@ -1,0 +1,33 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Embedded git repositories
+public/h5p/libraries/H5P.Blanks-1.14/.git/
+public/h5p/libraries/H5P.DragQuestion-1.14/.git/
+public/h5p/libraries/H5P.DragText-1.10/.git/
+public/h5p/libraries/H5P.FontIcons-1.0/.git/
+public/h5p/libraries/H5P.ImageHotspots-1.10/.git/
+public/h5p/libraries/H5P.Transition-1.0/.git/
+public/h5p/libraries/H5P.TrueFalse-1.8/.git/
