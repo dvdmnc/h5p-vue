@@ -212,7 +212,6 @@ import DragDropCreator from './DragDropCreator.vue';
 import FillInBlanksCreator from './FillInBlanksCreator.vue';
 import MatchingCreator from './MatchingCreator.vue';
 import SortingCreator from './SortingCreator.vue';
-import TrueFalseCreator from './TrueFalseCreator.vue';
 import OpenTextCreator from './OpenTextCreator.vue';
 import QuestionPreview from './QuestionPreview.vue';
 
@@ -231,6 +230,26 @@ const emit = defineEmits<{
 // Helper functions
 const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};
+
+// Helper function to check if data structure is valid for a question type
+const isValidDataForType = (data: any, type: QuestionType): boolean => {
+  if (!data || typeof data !== 'object') return false;
+  
+  switch (type) {
+    case 'multiple-choice':
+      return Array.isArray(data.choices);
+    case 'drag-drop':
+      return Array.isArray(data.draggableItems) || Array.isArray(data.dropZones);
+    case 'fill-in-blanks':
+      return typeof data.text === 'string';
+    case 'matching':
+      return Array.isArray(data.leftItems) || Array.isArray(data.rightItems);
+    case 'sorting':
+      return Array.isArray(data.items);
+    default:
+      return true;
+  }
 };
 
 // Helper function for default data
@@ -290,7 +309,6 @@ const questionDataByType = ref<Record<QuestionType, any>>({
   'fill-in-blanks': getDefaultTypeData('fill-in-blanks'),
   'matching': getDefaultTypeData('matching'),
   'sorting': getDefaultTypeData('sorting'),
-  'true-false': {},
   'open-text': {},
 });
 
@@ -347,7 +365,6 @@ const currentTypeComponent = computed(() => {
     'fill-in-blanks': FillInBlanksCreator,
     'matching': MatchingCreator,
     'sorting': SortingCreator,
-    'true-false': TrueFalseCreator,
     'open-text': OpenTextCreator,
   };
   return components[selectedType.value];
@@ -403,7 +420,6 @@ const getQuestionTypeLabel = (type: QuestionType): string => {
     'fill-in-blanks': 'Texte à Trous',
     'matching': 'Association',
     'sorting': 'Tri',
-    'true-false': 'Vrai/Faux',
     'open-text': 'Texte Libre',
   };
   return labels[type] || type;
@@ -507,7 +523,6 @@ const getH5PLibrary = (type: QuestionType): string => {
     'fill-in-blanks': 'H5P.Blanks 1.14',
     'matching': 'H5P.MemoryGame 1.3',
     'sorting': 'H5P.DragText 1.10',
-    'true-false': 'H5P.TrueFalse 1.8',
     'open-text': 'H5P.Essay 1.5',
   };
   return libraries[type] || 'H5P.MultiChoice 1.16';

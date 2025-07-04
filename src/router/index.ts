@@ -173,9 +173,17 @@ const routes: RouteRecordRaw[] = [
     name: 'H5PDemo',
     component: () => import('@/views/H5PDemoView.vue'),
     meta: {
-      title: 'Démonstration H5P - Check Compétences',
-      description: 'Explorez les possibilités des contenus interactifs H5P',
-      requiresAuth: false,
+      title: 'Démonstration H5P + Vue.js - Check Compétences',
+      description: 'Démonstration de l\'encapsulation H5P dans des composants Vue.js',
+    },
+  },
+  {
+    path: '/h5p-comparison',
+    name: 'H5PComparison',
+    component: () => import('@/views/H5PComparisonView.vue'),
+    meta: {
+      title: 'Comparison H5P Approaches - Check Compétences',
+      description: 'Comparison between CDN and Local H5P integration approaches',
     },
   },
   // Error routes

@@ -59,8 +59,8 @@
             :y1="getItemPosition(connection.leftId, 'left')"
             :x2="250"
             :y2="getItemPosition(connection.rightId, 'right')"
-            :stroke="connection.isCorrect ? '#10b981' : '#6b7280'"
-            :stroke-width="connection.isCorrect ? '3' : '2'"
+            :stroke="showFeedback ? (connection.isCorrect ? '#10b981' : '#ef4444') : '#6b7280'"
+            :stroke-width="showFeedback ? (connection.isCorrect ? '3' : '2') : '2'"
             stroke-linecap="round"
             class="connection-line"
           />
@@ -186,6 +186,16 @@
             ></div>
           </div>
         </div>
+        
+        <!-- Retry button -->
+        <div v-if="showFeedback && isCompleted" class="mt-4 text-center">
+          <button
+            @click="retryQuestion"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+          >
+            Réessayer
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -248,13 +258,7 @@ const isAllCorrect = computed(() => {
 // Methods
 const selectLeftItem = (item: MatchingItem) => {
   selectedLeftItem.value = selectedLeftItem.value?.id === item.id ? null : item;
-  selectedRightItem.value = null;
   previewConnection.value = null;
-  
-  // If we have a right item selected and click a left item, create connection
-  if (selectedRightItem.value && selectedLeftItem.value) {
-    createConnection(selectedLeftItem.value.id, selectedRightItem.value.id);
-  }
 };
 
 const selectRightItem = (item: MatchingItem) => {
@@ -341,6 +345,20 @@ const updatePreview = (event: MouseEvent) => {
     x: event.clientX - rect.left,
     y: event.clientY - rect.top
   };
+};
+
+const retryQuestion = () => {
+  // Clear all connections
+  connections.splice(0, connections.length);
+  
+  // Clear selected items
+  selectedLeftItem.value = null;
+  selectedRightItem.value = null;
+  previewConnection.value = null;
+  
+  // Emit reset events
+  emit('answerChanged', []);
+  emit('completed', false);
 };
 </script>
 

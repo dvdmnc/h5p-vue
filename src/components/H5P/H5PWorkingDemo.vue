@@ -1,19 +1,5 @@
 <template>
   <div class="h5p-working-demo">
-    <!-- Debug Info -->
-    <div class="debug-info mb-4 p-4 bg-gray-50 border rounded-lg">
-      <h4 class="font-semibold text-gray-800 mb-2">Mode actuel: <span class="text-blue-600">{{ props.renderMode }}</span></h4>
-      <div class="text-sm text-gray-600 space-y-1">
-        <div v-if="props.renderMode === 'cdn'"><strong>CDN URL:</strong> <a :href="cdnUrl" target="_blank" class="text-blue-500 hover:underline">{{ cdnUrl }}</a></div>
-        <div v-if="props.renderMode === 'local'">
-          <strong>Status Local:</strong> <span :class="{'text-green-600': localStatus === 'H5P initialisé avec succès!', 'text-red-600': localStatus.includes('Erreur'), 'text-blue-600': !localStatus.includes('Erreur') && localStatus !== 'H5P initialisé avec succès!'}">{{ localStatus }}</span>
-          <div><strong>Content Path:</strong> {{ getCurrentContentPath() }}</div>
-        </div>
-        <div><strong>H5P Standalone disponible:</strong> <span :class="h5pStandaloneAvailable ? 'text-green-600' : 'text-red-600'">{{ h5pStandaloneAvailable ? 'Oui' : 'Non' }}</span></div>
-        <div><strong>Question Type:</strong> <span class="text-blue-600">{{ selectedQuestionType }}</span></div>
-      </div>
-    </div>
-
     <!-- CDN Mode -->
     <div v-if="props.renderMode === 'cdn'" class="cdn-demo">
       <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -108,16 +94,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch, computed } from 'vue'
+// @ts-ignore
 import VueEnhancedQuiz from './VueEnhancedQuiz.vue'
-import { getContentPath, getCdnUrl, getAbsoluteH5PConfig } from '@/utils/h5p'
 
-// Declare global H5P types
-declare global {
-  interface Window {
-    H5P: any;
-    H5PStandalone: any;
-  }
-}
+import { getContentPath, getCdnUrl, getAbsoluteH5PConfig } from '@/utils/h5p'
 
 // Props
 interface Props {
@@ -162,37 +142,13 @@ const onIframeError = () => {
 
 const checkH5PStandalone = async () => {
   try {
-    // Check if H5P is available via global window object
-    if (typeof window !== 'undefined') {
-      console.log('Checking H5P availability:', {
-        'window.H5P': typeof window.H5P,
-        'window.H5PStandalone': typeof window.H5PStandalone,
-        'H5P keys': Object.keys(window).filter(k => k.includes('H5P'))
-      });
-      
-      if (window.H5P && typeof window.H5P === 'function') {
-        h5pStandaloneAvailable.value = true
-        console.log('✅ H5P is available via window.H5P')
-        return window.H5P
-      } else if (window.H5PStandalone && typeof window.H5PStandalone === 'function') {
-        h5pStandaloneAvailable.value = true
-        console.log('✅ H5P is available via window.H5PStandalone')
-        return window.H5PStandalone
-      } else {
-        // Maybe it's a different property - let's try to find it
-        const h5pKeys = Object.keys(window).filter(k => k.toLowerCase().includes('h5p'));
-        for (const key of h5pKeys) {
-          if (typeof (window as any)[key] === 'function') {
-            h5pStandaloneAvailable.value = true
-            console.log(`✅ H5P is available via window.${key}`)
-            return (window as any)[key]
-          }
-        }
-        throw new Error('H5P not found on window object')
-      }
-    } else {
-      throw new Error('Window object not available')
-    }
+    // Properly import H5P Standalone
+    const H5PStandaloneModule = await import('h5p-standalone')
+    const H5PStandalone = H5PStandaloneModule.default || H5PStandaloneModule
+    
+    h5pStandaloneAvailable.value = true
+    console.log('✅ H5P Standalone is available:', H5PStandalone)
+    return H5PStandalone
   } catch (error) {
     console.error('❌ H5P Standalone not available:', error)
     h5pStandaloneAvailable.value = false

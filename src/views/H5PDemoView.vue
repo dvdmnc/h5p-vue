@@ -32,10 +32,10 @@
               <input
                 type="radio"
                 v-model="renderMode"
-                value="original-cdn"
+                value="cdn"
                 class="mr-2"
               />
-              Original CDN
+              CDN + CSS Override
             </label>
             <label class="flex items-center">
               <input
@@ -183,6 +183,7 @@
             <h3 class="font-semibold text-gray-700 mb-3">Composants disponibles</h3>
             <ul class="space-y-2 text-sm text-gray-600">
               <li>• <code>H5PPlayer.vue</code> - Player H5P encapsulé</li>
+              <li>• <code>VueMultipleChoiceRenderer.vue</code> - Questions à choix multiples</li>
               <li>• <code>VueFillInBlanksRenderer.vue</code> - Texte à trous</li>
               <li>• <code>VueDragDropRenderer.vue</code> - Glisser-déposer</li>
               <li>• <code>VueMatchingRenderer.vue</code> - Associations</li>
@@ -200,7 +201,7 @@ import { ref, watch } from 'vue';
 import H5PWorkingDemo from '../components/H5P/H5PWorkingDemo.vue';
 
 // State
-const renderMode = ref<'local' | 'original-cdn' | 'vue'>('original-cdn');
+const renderMode = ref<'local' | 'cdn' | 'vue'>('cdn');
 const selectedQuestionType = ref('multiple-choice');
 const selectedAnswer = ref<string | null>(null);
 const score = ref(0);
@@ -293,7 +294,7 @@ const getCurrentQuestion = () => {
 const getRenderModeTitle = () => {
   switch (renderMode.value) {
     case 'local': return 'Local Libraries'
-    case 'original-cdn': return 'Original CDN'
+    case 'cdn': return 'CDN + CSS Override'
     case 'vue': return 'Vue.js Enhanced'
     default: return 'Unknown'
   }
@@ -303,8 +304,8 @@ const getCustomizationLevel = () => {
   switch (renderMode.value) {
     case 'local': 
       return { text: 'Maximum (si fonctionnel)', class: 'text-blue-600 font-medium' }
-    case 'original-cdn': 
-      return { text: 'Basique', class: 'text-gray-600 font-medium' }
+    case 'cdn': 
+      return { text: 'Élevé (recommandé)', class: 'text-green-600 font-medium' }
     case 'vue': 
       return { text: 'Maximum', class: 'text-purple-600 font-medium' }
     default: 

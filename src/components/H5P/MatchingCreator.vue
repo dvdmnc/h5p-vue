@@ -76,7 +76,7 @@
         </label>
         <div class="space-y-3">
           <div
-            v-for="pair in data.correctPairs"
+            v-for="(pair, index) in data.correctPairs"
             :key="pair.id"
             class="flex items-center space-x-3 p-4 bg-gray-50 border border-gray-200 rounded-lg"
           >
@@ -194,7 +194,6 @@ interface MatchingData {
   correctPairs: CorrectPair[];
   randomizeItems: boolean;
   showFeedback: boolean;
-  allowRetry: boolean;
 }
 
 interface Props {
@@ -209,7 +208,6 @@ const props = withDefaults(defineProps<Props>(), {
     correctPairs: [],
     randomizeItems: false,
     showFeedback: true,
-    allowRetry: true,
   })
 });
 
@@ -222,7 +220,6 @@ const data = ref<MatchingData>({
   leftItems: props.modelValue?.leftItems || [],
   rightItems: props.modelValue?.rightItems || [],
   correctPairs: props.modelValue?.correctPairs || [],
-  randomizeItems: props.modelValue?.randomizeItems ?? false,
   allowRetry: props.modelValue?.allowRetry ?? true,
   showFeedback: props.modelValue?.showFeedback ?? true,
 });

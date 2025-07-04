@@ -147,13 +147,13 @@ const loadH5PContent = async () => {
     console.log('📁 Loading content from:', contentPath);
 
     // Load H5P using the npm package with proper async handling
-    const { H5P } = await import('h5p-standalone');
+    const { H5P } = /* await */ import('h5p-standalone');
     
     // Configure H5P Standalone options following the official documentation
     const options = {
       h5pJsonPath: contentPath,
-      frameJs: '/h5p/frame.js',
-      frameCss: '/h5p/frame.css',
+      frameJs: 'h5p/h5p-standalone/dist/frame.bundle.js',
+      frameCss: 'h5p/h5p-standalone/dist/styles/h5p.css',
       librariesPath: '/h5p/libraries',
       frame: props.allowFullscreen,
       copyright: props.showCopyright,
@@ -168,7 +168,7 @@ const loadH5PContent = async () => {
     // Create H5P instance using a promise-based approach
     const h5pPlayerInstance = await new Promise<any>((resolve, reject) => {
       try {
-        const player = new H5P(targetElement, options);
+        const player = new window.H5P(targetElement, options);
         
         // Check if H5P instance has promise-like behavior
         if (player && typeof (player as any).then === 'function') {

@@ -29,7 +29,7 @@
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Zones de dépôt :</h3>
       <div class="drop-zones-container space-y-4">
         <div
-          v-for="zone in dropZones"
+          v-for="zone in zones"
           :key="zone.id"
           @dragover="handleDragOver"
           @dragenter="handleDragEnter($event, zone)"
@@ -111,6 +111,16 @@
           </div>
         </div>
       </div>
+      
+      <!-- Retry button -->
+      <div v-if="showFeedback && isCompleted" class="mt-4 text-center">
+        <button
+          @click="retryQuestion"
+          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+        >
+          Réessayer
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -180,12 +190,36 @@ const isCompleted = computed(() => placedItemsCount.value === totalItems.value);
 const isCorrect = computed(() => {
   if (!isCompleted.value) return false;
   
-  return zones.every(zone => {
-    if (!zone.correctItems) return true;
+  // Check each zone individually
+  for (const zone of zones) {
+    if (!zone.correctItems || zone.correctItems.length === 0) {
+      continue; // Skip zones without correct items defined
+    }
+    
     const droppedIds = zone.droppedItems?.map(item => item.id) || [];
-    return zone.correctItems.every(id => droppedIds.includes(id)) &&
-           droppedIds.every(id => zone.correctItems!.includes(id));
-  });
+    
+    // Check if all correct items are in this zone
+    const hasAllCorrectItems = zone.correctItems.every(id => droppedIds.includes(id));
+    
+    // Check if there are no extra items in this zone
+    const hasNoExtraItems = droppedIds.every(id => zone.correctItems!.includes(id));
+    
+    // Check if the zone has the correct number of items
+    const hasCorrectCount = droppedIds.length === zone.correctItems.length;
+    
+    if (!hasAllCorrectItems || !hasNoExtraItems || !hasCorrectCount) {
+      console.log(`Zone ${zone.id} incorrect:`, {
+        correctItems: zone.correctItems,
+        droppedItems: droppedIds,
+        hasAllCorrectItems,
+        hasNoExtraItems,
+        hasCorrectCount
+      });
+      return false;
+    }
+  }
+  
+  return true;
 });
 
 // Methods
@@ -303,11 +337,33 @@ const emitAnswerChanged = () => {
   });
   emit('answerChanged', answer);
 };
+
+const retryQuestion = () => {
+  // Reset all items to available state
+  availableItems.forEach(item => {
+    item.placed = false;
+  });
+  
+  // Clear all drop zones
+  zones.forEach(zone => {
+    zone.droppedItems = [];
+  });
+  
+  // Reset drag state
+  isDragging.value = false;
+  currentDragItem.value = null;
+  dragOverZone.value = null;
+  
+  // Emit reset events
+  emitAnswerChanged();
+  emit('completed', false);
+};
 </script>
 
 <style scoped>
 .vue-drag-drop-renderer {
-  @apply max-w-4xl mx-auto;
+  max-width: 56rem;
+  margin: 0 auto;
 }
 
 .draggable-item {
@@ -316,7 +372,7 @@ const emitAnswerChanged = () => {
 }
 
 .draggable-item:hover {
-  @apply shadow-lg;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .drop-zone {
@@ -324,7 +380,8 @@ const emitAnswerChanged = () => {
 }
 
 .drop-zone.drag-over {
-  @apply border-primary-500 bg-primary-50;
+  border-color: #3b82f6;
+  background-color: #eff6ff;
 }
 
 .progress-fill {
@@ -343,15 +400,19 @@ const emitAnswerChanged = () => {
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .draggable-items-container {
-    @apply grid grid-cols-2 gap-2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
   
   .draggable-item {
-    @apply text-sm px-3 py-2;
+    font-size: 0.875rem;
+    padding: 0.75rem;
   }
   
   .drop-zone {
-    @apply min-h-20 p-3;
+    min-height: 5rem;
+    padding: 0.75rem;
   }
 }
 </style>

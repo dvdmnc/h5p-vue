@@ -176,6 +176,16 @@
         </div>
       </div>
     </div>
+    
+    <!-- Retry button -->
+    <div v-if="showFeedback && isCompleted" class="mt-6 text-center">
+      <button
+        @click="retryQuestion"
+        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+      >
+        Réessayer
+      </button>
+    </div>
   </div>
 </template>
 
@@ -269,7 +279,7 @@ const handleDragEnd = () => {
   dropTargetIndex.value = null;
 };
 
-const handleDragOver = (event: DragEvent, index: number) => {
+const handleDragOver = (event: DragEvent, _index: number) => {
   event.preventDefault();
   if (event.dataTransfer) {
     event.dataTransfer.dropEffect = 'move';
@@ -323,6 +333,19 @@ const resetOrder = () => {
   sortableItems.length = 0;
   sortableItems.push(...originalOrder);
   showCorrectOrderPreview.value = false;
+};
+
+const retryQuestion = () => {
+  // Reset to original order
+  resetOrder();
+  
+  // Shuffle items for a new attempt
+  shuffleItems();
+  
+  // Emit reset events
+  emit('orderChanged', sortableItems.map(item => item.id));
+  emit('completed', false);
+  emit('scoreChanged', 0, sortableItems.length);
 };
 
 const shuffleItems = () => {

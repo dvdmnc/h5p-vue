@@ -131,9 +131,6 @@ interface SortingData {
   sortType: string;
   instructions: string;
   items: SortingItem[];
-  itemCount?: number;
-  showFeedback?: boolean;
-  allowRetry?: boolean;
 }
 
 interface Props {
@@ -174,7 +171,7 @@ const addItem = () => {
 const removeItem = (index: number) => {
   data.value.items.splice(index, 1);
   // Reorder the remaining items
-  data.value.items.forEach((item) => {
+  data.value.items.forEach((item, i) => {
     if (item.correctOrder > index + 1) {
       item.correctOrder--;
     }

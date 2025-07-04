@@ -17,7 +17,6 @@ export type QuestionType =
   | 'fill-in-blanks'
   | 'matching'
   | 'sorting'
-  | 'true-false'
   | 'open-text';
 
 export type DifficultyLevel = 'facile' | 'moyen' | 'difficile';
@@ -53,12 +52,6 @@ export interface SortingQuestion extends QuestionBase {
   correctOrder: string[]; // IDs dans le bon ordre
 }
 
-export interface TrueFalseQuestion extends QuestionBase {
-  type: 'true-false';
-  correctAnswer: boolean;
-  explanation?: string;
-}
-
 export interface OpenTextQuestion extends QuestionBase {
   type: 'open-text';
   expectedAnswer?: string;
@@ -72,7 +65,6 @@ export type Question =
   | FillInBlanksQuestion
   | MatchingQuestion
   | SortingQuestion
-  | TrueFalseQuestion
   | OpenTextQuestion;
 
 // Types pour les choix et éléments
