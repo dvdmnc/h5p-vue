@@ -12,8 +12,23 @@
   <body>
     <div id="app"></div>
     
-    <!-- H5P Standalone Scripts -->
+    <!-- H5P Standalone Scripts - Try both main and frame bundles -->
     <script src="/h5p/h5p-standalone/dist/main.bundle.js"></script>
+    <script src="/h5p/h5p-standalone/dist/frame.bundle.js"></script>
+    
+    <!-- Add a small delay and verification script -->
+    <script>
+      console.log('🔍 H5P Script loaded, checking availability...');
+      console.log('window.H5PStandalone:', typeof window.H5PStandalone);
+      if (window.H5PStandalone) {
+        console.log('✅ H5PStandalone available immediately');
+        console.log('H5PStandalone properties:', Object.keys(window.H5PStandalone));
+      } else {
+        console.log('❌ H5PStandalone not available immediately');
+      }
+    </script>
+    
+    <!-- Load Vue app after H5P is confirmed loaded -->
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

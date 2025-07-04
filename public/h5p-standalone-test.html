@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5P Standalone Test</title>
+    <link rel="stylesheet" href="/h5p/frame.css" />
+</head>
+<body>
+    <h1>H5P Standalone Test</h1>
+    <div id="h5p-container" style="border: 1px solid #ccc; padding: 20px; margin: 20px 0;"></div>
+    
+    <script src="/h5p/h5p-standalone/dist/main.bundle.js"></script>
+    <script>
+        console.log('🔍 Script loaded, checking H5P availability...');
+        
+        // Check what's available on window
+        console.log('window.H5PStandalone:', typeof window.H5PStandalone);
+        console.log('window.H5P:', typeof window.H5P);
+        
+        // Wait a bit and check again
+        setTimeout(() => {
+            console.log('🔍 After timeout - checking H5P availability...');
+            console.log('window.H5PStandalone:', window.H5PStandalone);
+            console.log('window.H5P:', window.H5P);
+            
+            // Try to initialize if available
+            if (typeof window.H5PStandalone !== 'undefined') {
+                console.log('✅ H5PStandalone is available!');
+                console.log('H5PStandalone structure:', Object.keys(window.H5PStandalone));
+                
+                try {
+                    const container = document.getElementById('h5p-container');
+                    const options = {
+                        h5pJsonPath: '/h5p/content/demo-multichoice',
+                        frameJs: '/h5p/h5p-standalone/dist/frame.bundle.js',
+                        frameCss: '/h5p/h5p-standalone/dist/styles/h5p.css',
+                        frame: true,
+                        copyright: true,
+                        export: false,
+                        icon: true,
+                        fullScreen: true
+                    };
+                    
+                    console.log('📋 Options:', options);
+                    
+                    // Try different ways to instantiate
+                    if (window.H5PStandalone.H5P) {
+                        console.log('🚀 Trying window.H5PStandalone.H5P...');
+                        const instance = new window.H5PStandalone.H5P(container, options);
+                        console.log('✅ Instance created:', instance);
+                    } else if (typeof window.H5PStandalone === 'function') {
+                        console.log('🚀 Trying window.H5PStandalone as constructor...');
+                        const instance = new window.H5PStandalone(container, options);
+                        console.log('✅ Instance created:', instance);
+                    } else {
+                        console.log('❌ Could not determine how to instantiate H5PStandalone');
+                        console.log('Available properties:', Object.keys(window.H5PStandalone));
+                    }
+                } catch (error) {
+                    console.error('❌ Error creating H5P instance:', error);
+                }
+            } else {
+                console.log('❌ H5PStandalone is not available');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

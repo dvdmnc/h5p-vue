@@ -4,11 +4,11 @@
 
 // Map of content types to their H5P content paths
 export const H5P_CONTENT_PATHS = {
-  'multiple-choice': '/h5p/content/demo-multichoice/content.json',
-  'fill-in-blanks': '/h5p/content/demo-blanks/content.json',
-  'drag-drop': '/h5p/content/demo-dragquestion/content.json',
-  'matching': '/h5p/content/demo-multichoice/content.json', // Fallback
-  'sorting': '/h5p/content/demo-multichoice/content.json',  // Fallback
+  'multiple-choice': '/h5p/content/demo-multichoice',
+  'fill-in-blanks': '/h5p/content/demo-blanks',
+  'drag-drop': '/h5p/content/demo-dragquestion',
+  'matching': '/h5p/content/demo-hotspots',
+  'sorting': '/h5p/content/demo-dragtext',
 }
 
 // Map of content types to their H5P CDN URLs
@@ -27,7 +27,7 @@ const getBaseUrl = () => {
 
 // H5P Standalone configuration
 export const H5P_STANDALONE_CONFIG = {
-  frameJs: '/h5p/h5p-standalone/frame.bundle.js',
+  frameJs: '/h5p/h5p-standalone/dist/frame.bundle.js',
   frameCss: '/h5p/frame.css', // Fixed CSS path to match actual location
   librariesPath: '/h5p/libraries'
 }

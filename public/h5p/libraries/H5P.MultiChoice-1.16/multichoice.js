@@ -5,10 +5,9 @@ H5P.MultiChoice = (function ($) {
   'use strict';
 
   function MultiChoice(params, id, extras) {
-    // Call parent constructor
-    H5P.Question.call(this, {
-      contentId: id,
-      title: 'Multiple Choice Question'
+    // Call parent constructor with correct parameters for H5P.Question
+    H5P.Question.call(this, 'multichoice', { 
+      theme: { name: 'default' }
     });
     
     this.params = params || {};
@@ -27,91 +26,138 @@ H5P.MultiChoice = (function ($) {
   MultiChoice.prototype = Object.create(H5P.Question.prototype);
   MultiChoice.prototype.constructor = MultiChoice;
 
-  MultiChoice.prototype.attach = function ($container) {
+  // Register DOM elements (called by H5P.Question.attach)
+  MultiChoice.prototype.registerDomElements = function () {
     const self = this;
     
-    console.log('🔧 H5P.MultiChoice.attach() called with container:', $container);
-    console.log('🔧 Container element:', $container[0]);
+    console.log('🔧 H5P.MultiChoice.registerDomElements() called');
+    console.log('🔧 Parameters:', this.params);
     
-    // Clear any existing content
-    $container.empty();
+    // Create main container
+    const $container = $('<div class="h5p-multichoice">');
     
-    $container.addClass('h5p-multichoice');
+    // Add question text
+    if (this.params.question) {
+      $container.append(`<div class="h5p-question-text">${this.params.question}</div>`);
+    }
     
-    // Create the HTML structure
-    const questionHtml = `
-      <div class="h5p-question">
-        <div class="h5p-question-content">
-          <div class="h5p-question-text">${this.params.question || 'Question de démonstration'}</div>
-          <div class="h5p-answers">
-            ${(this.params.answers || []).map((answer, index) => `
-              <label class="h5p-answer" data-index="${index}">
-                <input type="radio" name="answer-${this.id}" value="${index}">
-                <span class="h5p-answer-text">${answer.text || answer || 'Option ' + (index + 1)}</span>
+    // Create answers container
+    const $answersContainer = $('<ul class="h5p-answers">');
+    
+    // Add answers
+    if (this.params.answers && this.params.answers.length > 0) {
+      this.params.answers.forEach((answer, index) => {
+        const $answerItem = $(`
+          <li class="h5p-answer" data-index="${index}">
+            <div class="h5p-alternative-container">
+              <input type="radio" id="h5p-answer-${this.id}-${index}" name="answer-${this.id}" value="${index}">
+              <label for="h5p-answer-${this.id}-${index}" class="h5p-answer-text">
+                ${answer.text || answer || 'Option ' + (index + 1)}
               </label>
-            `).join('')}
-          </div>
-          <button class="h5p-check-answer" style="margin-top: 1rem; padding: 0.5rem 1rem; background-color: #3b82f6; color: white; border: none; border-radius: 0.375rem; cursor: pointer;">
-            ${this.params.UI?.checkAnswerButton || 'Vérifier'}
-          </button>
-          <div class="h5p-feedback" style="margin-top: 1rem; display: none;"></div>
-        </div>
-      </div>
-    `;
+            </div>
+          </li>
+        `);
+        $answersContainer.append($answerItem);
+      });
+    } else {
+      // Add default demo answers if none provided
+      const demoAnswers = [
+        { text: 'Framework progressif et facile à apprendre', correct: true },
+        { text: 'Complexité élevée', correct: false },
+        { text: 'Pas de documentation', correct: false }
+      ];
+      
+      demoAnswers.forEach((answer, index) => {
+        const $answerItem = $(`
+          <li class="h5p-answer" data-index="${index}">
+            <div class="h5p-alternative-container">
+              <input type="radio" id="h5p-answer-${this.id}-${index}" name="answer-${this.id}" value="${index}">
+              <label for="h5p-answer-${this.id}-${index}" class="h5p-answer-text">
+                ${answer.text}
+              </label>
+            </div>
+          </li>
+        `);
+        $answersContainer.append($answerItem);
+      });
+      
+      // Update params with demo data
+      this.params.answers = demoAnswers;
+      this.params.question = this.params.question || 'Quel est le principal avantage de Vue.js ?';
+    }
     
-    $container.html(questionHtml);
+    $container.append($answersContainer);
     
-    // Add event listeners
-    $container.find('.h5p-check-answer').on('click', function() {
+    // Add feedback area
+    const $feedback = $('<div class="h5p-feedback" style="margin-top: 1rem; display: none;">');
+    $container.append($feedback);
+    
+    // Register content with Question base class
+    this.setContent($container);
+    
+    // Register check button
+    this.addButton('check-answer', this.params.UI?.checkAnswerButton || 'Vérifier', function () {
       self.checkAnswer();
     });
     
-    // Add hover effects to answers
-    $container.find('.h5p-answer').on('mouseenter', function() {
-      $(this).css('background-color', '#f8f9fa');
-    }).on('mouseleave', function() {
-      $(this).css('background-color', '');
-    });
+    console.log('✅ H5P.MultiChoice DOM elements registered successfully');
+  };
+
+  MultiChoice.prototype.attach = function ($container) {
+    // Delegate to parent Question.attach which will call registerDomElements
+    H5P.Question.prototype.attach.call(this, $container);
     
-    console.log('✅ H5P.MultiChoice content attached successfully');
-    console.log('✅ Question HTML created:', questionHtml.substring(0, 100) + '...');
+    // Add any MultiChoice-specific event listeners after parent attach
+    const self = this;
+    setTimeout(() => {
+      $container.find('.h5p-answer').on('mouseenter', function() {
+        $(this).css('background-color', '#f8f9fa');
+      }).on('mouseleave', function() {
+        $(this).css('background-color', '');
+      });
+    }, 100);
     
-    // Force visibility
-    $container.show();
-    $container.css({
-      'display': 'block',
-      'visibility': 'visible',
-      'opacity': '1'
-    });
+    console.log('✅ H5P.MultiChoice attached to container successfully');
   };
 
   MultiChoice.prototype.checkAnswer = function() {
-    const selectedAnswer = document.querySelector(`input[name="answer-${this.id}"]:checked`);
-    if (!selectedAnswer) {
+    const selectedAnswer = this.$content.find(`input[name="answer-${this.id}"]:checked`);
+    if (selectedAnswer.length === 0) {
       alert('Veuillez sélectionner une réponse');
       return;
     }
     
-    const selectedIndex = parseInt(selectedAnswer.value);
+    const selectedIndex = parseInt(selectedAnswer.val());
     const isCorrect = this.params.answers[selectedIndex]?.correct || false;
     
     this.score = isCorrect ? 1 : 0;
     this.answered = true;
     
     // Show feedback
-    const feedbackDiv = document.querySelector(`#${this.id} .h5p-feedback`);
-    if (feedbackDiv) {
+    const feedbackDiv = this.$content.find('.h5p-feedback');
+    if (feedbackDiv.length > 0) {
       const feedback = isCorrect ? 
         (this.params.answers[selectedIndex]?.tipsAndFeedback?.chosenFeedback || 'Correct !') :
         (this.params.answers[selectedIndex]?.tipsAndFeedback?.chosenFeedback || 'Incorrect.');
         
-      feedbackDiv.innerHTML = `
+      feedbackDiv.html(`
         <div style="padding: 0.75rem; border-radius: 0.375rem; ${isCorrect ? 'background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724;' : 'background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;'}">
           ${feedback}
         </div>
-      `;
-      feedbackDiv.style.display = 'block';
+      `);
+      feedbackDiv.show();
     }
+    
+    // Update visual feedback on answers
+    this.$content.find('.h5p-answer').each(function(index) {
+      const $this = $(this);
+      const answer = this.params.answers[index];
+      if (answer?.correct) {
+        $this.addClass('h5p-correct');
+      } else if (index === selectedIndex && !isCorrect) {
+        $this.addClass('h5p-wrong');
+      }
+    }.bind(this));
     
     this.trigger('scored', this.score, this.maxScore);
     console.log('H5P.MultiChoice answer checked, score:', this.score, 'isCorrect:', isCorrect);

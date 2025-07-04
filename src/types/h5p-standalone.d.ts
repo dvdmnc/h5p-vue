@@ -37,3 +37,15 @@ declare module 'h5p-standalone' {
     setCurrentState(state: any): void;
   }
 }
+
+// Global window interface for H5P Standalone
+declare global {
+  interface Window {
+    H5PStandalone: {
+      H5P: typeof H5PStandalone;
+    };
+    H5P?: any;
+  }
+}
+
+export {};

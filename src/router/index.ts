@@ -178,12 +178,12 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/h5p-comparison',
-    name: 'H5PComparison',
-    component: () => import('@/views/H5PComparisonView.vue'),
+    path: '/h5p-standard',
+    name: 'H5PStandard',
+    component: () => import('@/components/H5P/H5PStandardDemo.vue'),
     meta: {
-      title: 'Comparison H5P Approaches - Check Compétences',
-      description: 'Comparison between CDN and Local H5P integration approaches',
+      title: 'H5P Standard Demo - Check Compétences',
+      description: 'Standard H5P integration test',
     },
   },
   // Error routes

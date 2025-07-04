@@ -1,128 +1,207 @@
+/* Improved H5P Blanks CSS with better visual design */
 .h5p-blanks {
   position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  line-height: 1.8;
+  font-size: 16px;
+  color: #334155;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
 .h5p-blanks .h5p-input-wrapper {
   display: inline-flex;
   position: relative;
   align-items: center;
-  vertical-align: top;
-  height: calc(var(--h5p-theme-spacing-xl) - 1px);
+  vertical-align: baseline;
+  height: auto;
+  margin: 0 4px;
 }
+
 .h5p-blanks .h5p-text-input {
-  font-family: var(--h5p-theme-font-name);
-  font-size: var(--h5p-theme-font-size-m);
-  border-radius: var(--h5p-theme-border-radius-medium);
-  background-color: var(--h5p-theme-ui-base);
-  border: 2px solid var(--h5p-theme-alternative-darker);
-  padding: calc(var(--h5p-theme-spacing-xs) / 2) 0 calc(var(--h5p-theme-spacing-xs) / 2) var(--h5p-theme-spacing-xxs);
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #cbd5e1;
+  padding: 10px 14px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  color: var(--h5p-theme-text-primary);
-  width: 6em;
-  font-weight: 600;
+  color: #1e293b;
+  min-width: 8em;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
+
 .h5p-blanks .h5p-text-input:focus {
-  box-shadow: 0 0 0.5em 0 var(--h5p-theme-main-cta-base) !important;
-  border-color: var(--h5p-theme-main-cta-base) !important;
-  outline: 1px ridge var(--h5p-theme-main-cta-base) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+  outline: none;
+  transform: translateY(-1px);
 }
+
 .h5p-blanks .h5p-text-input:disabled {
-  opacity: 1;
+  opacity: 0.7;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  cursor: not-allowed;
 }
+
 .h5p-blanks .h5p-text-input.h5p-not-filled-out {
-  background: #fff0f0;
+  background: linear-gradient(135deg, #fef7f7 0%, #fecaca 100%);
+  border-color: #f87171;
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.1);
 }
+
 .h5p-blanks .h5p-separate-lines .h5p-input-wrapper {
   display: block;
+  margin: 12px 0;
 }
+
 .h5p-blanks .h5p-separate-lines .h5p-text-input {
   width: 100%;
   box-sizing: border-box;
-  -moz-box-sizing: border-box;
 }
 
-/* Correctly answered input */
+/* Correctly answered input with enhanced styling */
 .h5p-blanks .h5p-correct .h5p-text-input {
-  background: var(--h5p-theme-feedback-correct-secondary);
-  border: 2px solid var(--h5p-theme-feedback-correct-third);
-  color: var(--h5p-theme-feedback-correct-main);
-  font-weight: bold;
-  padding-right: var(--h5p-theme-spacing-m);
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 2px solid #16a34a;
+  color: #15803d;
+  font-weight: 600;
+  padding-right: 40px;
+  box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.2);
 }
-/* Showing solution */
+
+/* Showing solution with better styling */
 .h5p-blanks .h5p-correct-answer {
-  color: var(--h5p-theme-feedback-correct-main);
+  color: #15803d;
   font-weight: bold;
-  border: 2px var(--h5p-theme-feedback-correct-main) dashed;
-  background-color: var(--h5p-theme-feedback-correct-secondary);
-  padding: calc(var(--h5p-theme-spacing-xs) / 2);
-  border-radius: var(--h5p-theme-border-radius-medium);
-  margin-left: .5em;
+  border: 2px #16a34a dashed;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin-left: 0.5em;
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.1);
 }
 
 .h5p-blanks .h5p-correct:after {
   position: absolute;
-  right: var(--h5p-theme-spacing-xxs);
-  text-decoration: none;
-  font-family: 'h5p-theme';
-  content: "\e903";
-  color: var(--h5p-theme-feedback-correct-main);
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  content: "✓";
+  color: #15803d;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Wrongly answered input */
+/* Wrongly answered input with enhanced styling */
 .h5p-blanks .h5p-wrong .h5p-text-input {
-  color: var(--h5p-theme-feedback-incorrect-main);
-  background-color: var(--h5p-theme-feedback-incorrect-secondary);
-  border: solid 2px var(--h5p-theme-feedback-incorrect-third);
-  font-weight: bold;
-  padding-right: var(--h5p-theme-spacing-m);
+  color: #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+  border: 2px solid #f87171;
+  font-weight: 600;
+  padding-right: 40px;
+  box-shadow: 0 4px 6px -1px rgba(248, 113, 113, 0.2);
 }
+
 .h5p-blanks .h5p-wrong:after {
   position: absolute;
-  right: var(--h5p-theme-spacing-xxs);
-  font-family: 'h5p-theme';
-  content: "\e902";
-  text-decoration: none;
-  color: var(--h5p-theme-feedback-incorrect-main);
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  content: "✗";
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Actual text paragraphs */
+.h5p-blanks .h5p-wrong:after {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  content: "✗";
+  color: #dc2626;
+  font-weight: bold;
+}
 
+/* Question content styling */
 .h5p-blanks .h5p-question-content p {
   display: inline-block;
-  color: var(--h5p-theme-text-secondary);
+  color: #374151;
   margin: 0;
-  font-size: var(--h5p-theme-font-size-m);
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .h5p-blanks .h5p-question-content { 
-  background-color: var(--h5p-theme-alternative-light);
-  color: var(--h5p-theme-text-secondary);
-  border: solid 1px var(--h5p-theme-alternative-base);
-  border-radius: var(--h5p-theme-border-radius-medium);
-  padding: 0 var(--h5p-theme-spacing-s);
+  background-color: #f9fafb;
+  color: #374151;
+  border: solid 1px #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
   font-weight: 500;
-  margin: 0 var(--h5p-theme-spacing-m);
+  margin: 16px 0;
 }
 
-/* Header and footer blocks (title + evaluation, buttons) */
+/* Tips and help */
 .h5p-blanks .joubel-tip-container {
   position: absolute;
-  right: 0.4em;
-  font-size: var(--h5p-theme-font-size-m);
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
 }
+
 .h5p-blanks .joubel-tip-container .joubel-icon-tip-normal {
   line-height: 1em;
 }
+
 .h5p-blanks .has-tip .h5p-text-input {
-  padding-right: 2.25em;
+  padding-right: 32px;
 }
+
 .h5p-blanks .has-tip.h5p-correct:after,
 .h5p-blanks .has-tip.h5p-wrong:after {
-  right: 2.25em;
+  right: 32px;
 }
+
 .h5p-blanks .has-tip.h5p-correct .h5p-text-input,
+.h5p-blanks .has-tip.h5p-wrong .h5p-text-input {
+  padding-right: 32px;
+}
+
+/* Additional styling for better appearance */
+.h5p-blanks .h5p-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.h5p-blanks {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .h5p-blanks .h5p-text-input {
+    min-width: 4em;
+    font-size: 14px;
+  }
+  
+  .h5p-blanks .h5p-separate-lines .h5p-text-input {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
 .h5p-blanks .has-tip.h5p-wrong .h5p-text-input {
   padding-right: 3.5em;
 }

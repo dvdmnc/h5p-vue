@@ -31,8 +31,17 @@
       </div>
     </div>
     
+    <!-- Status for debugging -->
+    <div v-if="status" class="status bg-blue-50 border border-blue-200 rounded p-2 mb-4 text-sm">
+      {{ status }}
+    </div>
+    
     <!-- H5P Content Container -->
-    <div v-else :id="containerId" class="h5p-content-container"></div>
+    <div :id="containerId" ref="h5pContainer" class="h5p-content-container">
+      <p v-if="!h5pLoaded && !isLoading && !error">
+        {{ isLoading ? 'Chargement du contenu H5P...' : 'Prêt à charger le contenu H5P' }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -72,19 +81,15 @@ const emit = defineEmits<{
 }>();
 
 // State
-const h5pContainer = ref<HTMLElement>();
-const isLoading = ref(true);
+const isLoading = ref(false);
+const h5pLoaded = ref(false);
 const error = ref<string | null>(null);
+const status = ref('Prêt à charger du contenu H5P');
 const h5pInstance = ref<any>(null);
+const h5pContainer = ref<HTMLElement | null>(null);
 
 // Computed
-const elementId = computed(() => `h5p-container-${Math.random().toString(36).substr(2, 9)}`);
-
-const containerClasses = computed(() => ({
-  'h5p-custom-theme': props.customTheme,
-  'h5p-loading': isLoading.value,
-  'h5p-error': !!error.value,
-}));
+const containerId = computed(() => `h5p-container-${Math.random().toString(36).substr(2, 9)}`);
 
 // Get content path based on props
 const getContentPath = () => {
@@ -100,7 +105,6 @@ const getContentPath = () => {
     'matching': 'demo-hotspots',               // H5P.ImageHotspots
     'linking': 'demo-hotspots',                // H5P.ImageHotspots
     'sorting': 'demo-dragtext',                // H5P.DragText
-    'true-false': 'demo-multichoice'           // H5P.TrueFalse (fallback to multichoice)
   };
   
   const contentId = contentMap[props.questionType || 'multiple-choice'] || 'demo-multichoice';
@@ -109,13 +113,16 @@ const getContentPath = () => {
 
 // Watchers
 watch(() => [props.contentId, props.questionType], async () => {
-  if (h5pContainer.value) {
-    await loadH5PContent();
-  }
+  await loadH5PContent();
 }, { deep: true });
 
 // Lifecycle
 onMounted(async () => {
+  // Select first content by default if available
+  status.value = 'Composant H5P initialisé';
+  console.log('H5P Player component mounted');
+  
+  // Load content automatically
   await loadH5PContent();
 });
 
@@ -123,106 +130,95 @@ onUnmounted(() => {
   cleanup();
 });
 
-// Main method to load H5P content using H5P Standalone
+// Main method to load H5P content using H5P Standalone (simplified approach like projet-gilles)
 const loadH5PContent = async () => {
-  if (!h5pContainer.value) return;
+  if (!h5pContainer.value) {
+    error.value = 'Container element not found';
+    return;
+  }
 
   isLoading.value = true;
+  h5pLoaded.value = false;
   error.value = null;
+  status.value = 'Initialisation de H5P...';
 
   try {
-    console.log('🚀 Loading H5P content with H5P Standalone...');
-    
-    // Get target element
-    const targetElement = document.getElementById(elementId.value);
-    if (!targetElement) {
-      throw new Error('Target element not found: ' + elementId.value);
-    }
+    // Clear container
+    h5pContainer.value.innerHTML = '<p>Chargement en cours...</p>';
 
-    // Clear any existing content
-    targetElement.innerHTML = '';
-    
+    // Wait for next tick to ensure DOM update
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Get content path
     const contentPath = getContentPath();
-    console.log('📁 Loading content from:', contentPath);
+    console.log('📁 Loading H5P content from:', contentPath);
 
-    // Load H5P using the npm package with proper async handling
-    const { H5P } = /* await */ import('h5p-standalone');
-    
-    // Configure H5P Standalone options following the official documentation
+    // Configure H5P options (simplified like the working project)
     const options = {
       h5pJsonPath: contentPath,
-      frameJs: 'h5p/h5p-standalone/dist/frame.bundle.js',
-      frameCss: 'h5p/h5p-standalone/dist/styles/h5p.css',
-      librariesPath: '/h5p/libraries',
+      frameJs: './h5p/h5p-standalone/dist/frame.bundle.js',
+      frameCss: './h5p/frame.css',
       frame: props.allowFullscreen,
       copyright: props.showCopyright,
-      icon: props.showCopyright,
-      fullscreen: props.allowFullscreen,
       export: props.showDownload,
-      embed: props.showEmbed
+      icon: props.showCopyright,
+      fullScreen: props.allowFullscreen
     };
 
     console.log('🔧 H5P options:', options);
 
-    // Create H5P instance using a promise-based approach
-    const h5pPlayerInstance = await new Promise<any>((resolve, reject) => {
-      try {
-        const player = new window.H5P(targetElement, options);
-        
-        // Check if H5P instance has promise-like behavior
-        if (player && typeof (player as any).then === 'function') {
-          (player as any).then(resolve).catch(reject);
-        } else {
-          // If not a promise, resolve immediately
-          resolve(player);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-    
-    // Store instance reference
-    h5pInstance.value = h5pPlayerInstance;
+    // Verify H5PStandalone is available
+    if (typeof (window as any).H5PStandalone === 'undefined') {
+      throw new Error('H5PStandalone n\'est pas chargé');
+    }
 
-    // Setup event listeners
+    // Create new H5P instance (same pattern as working project)
+    h5pInstance.value = new (window as any).H5PStandalone.H5P(h5pContainer.value, options);
+    await h5pInstance.value;
+
+    console.log('✅ H5P initialisé avec succès !');
+    h5pLoaded.value = true;
+    status.value = `Contenu H5P chargé avec succès !`;
+
+    // Setup xAPI event listeners
     setupH5PEventListeners();
     
-    console.log('✅ H5P content loaded successfully');
     isLoading.value = false;
     
     emit('ready', { 
       type: 'h5p-standalone', 
       contentPath,
-      instance: h5pPlayerInstance 
+      instance: h5pInstance.value 
     });
     
   } catch (err) {
-    console.error('❌ H5P loading error:', err);
+    console.error('❌ Erreur lors de l\'initialisation de H5P:', err);
     
     const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue lors du chargement H5P';
     error.value = errorMessage;
-    isLoading.value = false;
+    status.value = `Erreur: ${errorMessage}`;
+    h5pContainer.value!.innerHTML = `<p style="color: red;">Erreur lors du chargement: ${errorMessage}</p>`;
     
+    isLoading.value = false;
     emit('error', errorMessage);
   }
 };
 
-// Setup H5P event listeners using the external dispatcher
+// Setup H5P event listeners using the external dispatcher (like working project)
 const setupH5PEventListeners = () => {
   try {
-    // Wait for H5P to be available and setup listeners
+    // Setup listeners when H5P is available
     const setupListeners = () => {
       if (typeof window !== 'undefined' && (window as any).H5P?.externalDispatcher) {
-        console.log('🔧 Setting up H5P event listeners...');
+        console.log('🔧 Configuration des écouteurs d\'événements H5P...');
         
         const dispatcher = (window as any).H5P.externalDispatcher;
         
-        // Listen for xAPI events (score, completion, etc.)
+        // Listen for xAPI events 
         dispatcher.on('xAPI', (event: any) => {
-          console.log('📊 H5P xAPI event:', event);
+          console.log('📊 Événement xAPI H5P reçu:', event);
           
-          const verb = event.getVerb();
+          const verb = event.getVerb ? event.getVerb() : 'unknown';
           const data = event.data;
           
           emit('interaction', verb, data);
@@ -261,15 +257,10 @@ const setupH5PEventListeners = () => {
           }
         });
         
-        // Listen for resize events
-        dispatcher.on('resize', () => {
-          console.log('📐 H5P content resized');
-        });
-        
-        console.log('✅ H5P event listeners setup complete');
+        console.log('✅ Écouteurs d\'événements H5P configurés');
         
       } else {
-        // H5P not ready yet, try again
+        // H5P not ready yet, retry
         setTimeout(setupListeners, 100);
       }
     };
@@ -277,13 +268,14 @@ const setupH5PEventListeners = () => {
     setupListeners();
     
   } catch (err) {
-    console.warn('⚠️ Could not setup H5P event listeners:', err);
+    console.warn('⚠️ Impossible de configurer les écouteurs d\'événements H5P:', err);
   }
 };
 
 // Retry loading
 const retry = async () => {
   error.value = null;
+  status.value = 'Nouvelle tentative...';
   cleanup();
   await loadH5PContent();
 };
@@ -292,30 +284,45 @@ const retry = async () => {
 const cleanup = () => {
   if (h5pInstance.value) {
     try {
-      // H5P Standalone doesn't require explicit cleanup
-      // Just clear the container
-      const container = document.getElementById(elementId.value);
-      if (container) {
-        container.innerHTML = '';
+      // Clear the container
+      if (h5pContainer.value) {
+        h5pContainer.value.innerHTML = '';
       }
     } catch (err) {
-      console.warn('⚠️ Error during cleanup:', err);
+      console.warn('⚠️ Erreur pendant le nettoyage:', err);
     }
     h5pInstance.value = null;
   }
+  h5pLoaded.value = false;
 };
 </script>
 
 <style scoped>
-.h5p-container {
+.h5p-player-wrapper {
   width: 100%;
-  min-height: 24rem;
   position: relative;
 }
 
-.h5p-content {
-  width: 100%;
-  height: 100%;
+.h5p-content-container {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  min-height: 400px;
+  background-color: #fff;
+}
+
+.status {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.h5p-loading {
+  background-color: #f9fafb;
+}
+
+.h5p-error {
+  background-color: #f9fafb;
 }
 
 .h5p-custom-theme {
@@ -345,14 +352,6 @@ const cleanup = () => {
 .h5p-custom-theme :deep(.h5p-button:hover) {
   background-color: #2563eb;
   transform: translateY(-1px);
-}
-
-.h5p-loading {
-  background-color: #f9fafb;
-}
-
-.h5p-error {
-  background-color: #f9fafb;
 }
 
 /* Force H5P content visibility */
@@ -388,7 +387,7 @@ const cleanup = () => {
 }
 
 @media (max-width: 768px) {
-  .h5p-container {
+  .h5p-content-container {
     min-height: 20rem;
   }
 }

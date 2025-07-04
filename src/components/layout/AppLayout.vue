@@ -92,6 +92,18 @@
               >
                 Démo H5P
               </router-link>
+              
+              <router-link
+                to="/h5p-standard"
+                :class="[
+                  'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors',
+                  $route.path === '/h5p-standard'
+                    ? 'border-primary-500 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                ]"
+              >
+                H5P Standard
+              </router-link>
             </div>
           </div>
           
@@ -234,6 +246,19 @@
             ]"
           >
             Démo H5P
+          </router-link>
+          
+          <router-link
+            to="/h5p-standard"
+            @click="mobileMenuOpen = false"
+            :class="[
+              'block px-3 py-2 rounded-md text-base font-medium transition-colors',
+              $route.path === '/h5p-standard'
+                ? 'bg-primary-100 text-primary-700'
+                : 'text-gray-700 hover:bg-gray-100'
+            ]"
+          >
+            H5P Standard
           </router-link>
         </div>
       </div>
