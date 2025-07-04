@@ -407,7 +407,6 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAssessmentStore } from '@/stores/assessment';
-import H5PPlayer from '@/components/H5P/H5PPlayer.vue';
 import AssessmentResults from './AssessmentResults.vue';
 import SettingsModal from './SettingsModal.vue';
 import DetailedResultsModal from './DetailedResultsModal.vue';
@@ -452,17 +451,6 @@ const {
 } = storeToRefs(assessmentStore);
 
 const currentResult = computed(() => results.value[results.value.length - 1] || null);
-
-// Debug computed for troubleshooting
-const debugInfo = computed(() => ({
-  questionType: currentQuestion.value?.type,
-  selectedAnswer: selectedAnswer.value,
-  dragDropAnswers: Object.keys(dragDropAnswers.value).length,
-  matchingPairs: matchingPairs.value.length,
-  fillBlanksAnswers: Object.keys(fillBlanksAnswers.value).length,
-  sortingItems: sortingItems.value.length,
-  canProceed: canProceed.value
-}));
 
 // Sample questions for demo - Various skill levels and types
 const sampleQuestions = ref<Question[]>([
@@ -634,12 +622,12 @@ const sampleQuestions = ref<Question[]>([
     category: 'informatique',
     estimatedTime: 90,
     items: [
-      { id: 's1', content: 'Ouvrir sa boîte email' },
-      { id: 's2', content: 'Cliquer sur "Nouveau message"' },
-      { id: 's3', content: 'Saisir l\'adresse du destinataire' },
-      { id: 's4', content: 'Écrire l\'objet du message' },
-      { id: 's5', content: 'Rédiger le contenu' },
-      { id: 's6', content: 'Cliquer sur "Envoyer"' }
+      { id: 's1', content: 'Ouvrir sa boîte email', order: 1 },
+      { id: 's2', content: 'Cliquer sur "Nouveau message"', order: 2 },
+      { id: 's3', content: 'Saisir l\'adresse du destinataire', order: 3 },
+      { id: 's4', content: 'Écrire l\'objet du message', order: 4 },
+      { id: 's5', content: 'Rédiger le contenu', order: 5 },
+      { id: 's6', content: 'Cliquer sur "Envoyer"', order: 6 }
     ],
     correctOrder: ['s1', 's2', 's3', 's4', 's5', 's6']
   },
@@ -720,7 +708,7 @@ const handleDrop = (zoneId: string, event: DragEvent) => {
 
 const checkDragDropCompletion = () => {
   const zones = (currentQuestion.value as any)?.dropZones || [];
-  canProceed.value = zones.every(zone => dragDropAnswers.value[zone.id]);
+  canProceed.value = zones.every((zone: any) => dragDropAnswers.value[zone.id]);
 };
 
 const selectMatchingItem = (side: 'left' | 'right', itemId: string) => {
@@ -751,7 +739,7 @@ const removePair = (index: number) => {
 };
 
 const checkMatchingCompletion = () => {
-  const leftItems = currentQuestion.value?.leftItems || [];
+  const leftItems = (currentQuestion.value as any)?.leftItems || [];
   canProceed.value = matchingPairs.value.length === leftItems.length;
 };
 
@@ -781,7 +769,7 @@ const renderBlankText = (text: string): string => {
   if (!text) return '';
   
   // Replace {{1}}, {{2}} etc with input fields
-  return text.replace(/\{\{(\d+)\}\}/g, (match, blankNumber) => {
+  return text.replace(/\{\{(\d+)\}\}/g, (_, blankNumber) => {
     const blankId = blankNumber;
     return `<input 
       type="text" 
@@ -800,7 +788,7 @@ const renderBlankText = (text: string): string => {
 };
 
 const checkFillBlanksCompletion = () => {
-  const text = currentQuestion.value?.typeSpecificData?.text || '';
+  const text = (currentQuestion.value as any)?.typeSpecificData?.text || '';
   const blanksCount = (text.match(/\*[^*]+\*/g) || []).length;
   const filledBlanks = Object.keys(fillBlanksAnswers.value).length;
   canProceed.value = filledBlanks >= blanksCount;
@@ -843,7 +831,11 @@ const resetQuestionState = () => {
   
   // Initialize sorting items if it's a sorting question
   if (currentQuestion.value?.type === 'sorting') {
-    sortingItems.value = [...(currentQuestion.value.items || [])].sort(() => Math.random() - 0.5);
+    const items = (currentQuestion.value as any).items || [];
+    sortingItems.value = [...items].map(item => ({
+      ...item,
+      correctOrder: item.order || item.correctOrder
+    })).sort(() => Math.random() - 0.5);
   }
   
   // Update canProceed state
@@ -946,26 +938,6 @@ const getQuestionTypeLabel = (type: QuestionType): string => {
     'open-text': 'Texte Libre',
   };
   return labels[type] || type;
-};
-
-const handleQuestionCompleted = async (result: any) => {
-  canProceed.value = true;
-  
-  // Submit the answer to the store
-  await assessmentStore.submitAnswer(
-    result.state || result.answers,
-    result.timeSpent || 30
-  );
-};
-
-const handleScoreChanged = (score: number, maxScore: number) => {
-  // Update UI based on score if needed
-  console.log(`Score: ${score}/${maxScore}`);
-};
-
-const handleInteraction = (event: string, data: any) => {
-  // Track user interactions for analytics
-  console.log('Interaction:', event, data);
 };
 
 const nextQuestion = async () => {

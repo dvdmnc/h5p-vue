@@ -291,71 +291,60 @@ const hasValidText = computed(() => {
   return text && text.trim() !== '';
 });
 
-const hasValidChoices = computed(() => {
-  const choices = props.question.typeSpecificData?.choices || props.question.choices || [];
-  return choices.length > 0 && choices.some(choice => choice.text && choice.text.trim() !== '');
-});
-
 const hasValidDraggableItems = computed(() => {
   const items = props.question.typeSpecificData?.draggableItems || [];
-  return items.length > 0 && items.some(item => item.text && item.text.trim() !== '');
+  return items.length > 0 && items.some((item: any) => item.text && item.text.trim() !== '');
 });
 
 const hasValidDropZones = computed(() => {
   const zones = props.question.typeSpecificData?.dropZones || [];
-  return zones.length > 0 && zones.some(zone => zone.label && zone.label.trim() !== '');
+  return zones.length > 0 && zones.some((zone: any) => zone.label && zone.label.trim() !== '');
 });
 
 const hasValidLeftItems = computed(() => {
   const items = props.question.typeSpecificData?.leftItems || [];
-  return items.length > 0 && items.some(item => item.content && item.content.trim() !== '');
+  return items.length > 0 && items.some((item: any) => item.content && item.content.trim() !== '');
 });
 
 const hasValidRightItems = computed(() => {
   const items = props.question.typeSpecificData?.rightItems || [];
-  return items.length > 0 && items.some(item => item.content && item.content.trim() !== '');
+  return items.length > 0 && items.some((item: any) => item.content && item.content.trim() !== '');
 });
 
 const hasValidSortingItems = computed(() => {
   const items = props.question.typeSpecificData?.items || [];
-  return items.length > 0 && items.some(item => item.content && item.content.trim() !== '');
-});
-
-// Updated hasAnyContent to always show preview structure
-const hasAnyContent = computed(() => {
-  // Always show the preview structure, even for empty questions
-  return true;
+  return items.length > 0 && items.some((item: any) => item.content && item.content.trim() !== '');
 });
 
 // Get functions for template use
 const getValidChoices = computed(() => {
   const choices = props.question.typeSpecificData?.choices || props.question.choices || [];
-  return choices.filter(choice => choice.text && choice.text.trim() !== '');
+  return choices.filter((choice: any) => choice.text && choice.text.trim() !== '');
 });
 
 const getValidDraggableItems = computed(() => {
   const items = props.question.typeSpecificData?.draggableItems || [];
-  return items.filter(item => item.text && item.text.trim() !== '');
+  return items.filter((item: any) => item.text && item.text.trim() !== '');
 });
 
 const getValidDropZones = computed(() => {
   const zones = props.question.typeSpecificData?.dropZones || [];
-  return zones.filter(zone => zone.label && zone.label.trim() !== '');
+  return zones.filter((zone: any) => zone.label && zone.label.trim() !== '');
 });
 
 const getValidLeftItems = computed(() => {
   const items = props.question.typeSpecificData?.leftItems || [];
-  return items.filter(item => item.content && item.content.trim() !== '');
+  return items.filter((item: any) => item.content && item.content.trim() !== '');
 });
 
 const getValidRightItems = computed(() => {
   const items = props.question.typeSpecificData?.rightItems || [];
-  return items.filter(item => item.content && item.content.trim() !== '');
+  return items.filter((item: any) => item.content && item.content.trim() !== '');
 });
 
 const getValidSortingItems = computed(() => {
   const items = props.question.typeSpecificData?.items || [];
-  const validItems = items.filter(item => item.content && item.content.trim() !== '');
+  const validItems = items.filter((item: any) => item.content && item.content.trim() !== '');
   // Shuffle for preview
   return [...validItems].sort(() => Math.random() - 0.5);
 });

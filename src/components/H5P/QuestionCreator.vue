@@ -233,26 +233,6 @@ const generateId = (): string => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
-// Helper function to check if data structure is valid for a question type
-const isValidDataForType = (data: any, type: QuestionType): boolean => {
-  if (!data || typeof data !== 'object') return false;
-  
-  switch (type) {
-    case 'multiple-choice':
-      return Array.isArray(data.choices);
-    case 'drag-drop':
-      return Array.isArray(data.draggableItems) || Array.isArray(data.dropZones);
-    case 'fill-in-blanks':
-      return typeof data.text === 'string';
-    case 'matching':
-      return Array.isArray(data.leftItems) || Array.isArray(data.rightItems);
-    case 'sorting':
-      return Array.isArray(data.items);
-    default:
-      return true;
-  }
-};
-
 // Helper function for default data
 const getDefaultTypeData = (type: QuestionType) => {
   switch (type) {

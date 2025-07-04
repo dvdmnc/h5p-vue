@@ -39,7 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Permission checking methods
   const hasPermission = (resource: string, action: string): boolean => {
-    if (!session.value) return false;
+    if (!session.value || !session.value.permissions) return false;
     
     const permission = session.value.permissions.find((p: any) => p.resource === resource);
     return permission ? permission.actions.includes(action) : false;
@@ -64,7 +64,9 @@ export const useAuthStore = defineStore('auth', () => {
       // Sauvegarder le token et le rôle dans localStorage ou sessionStorage
       const storage = credentials.remember ? localStorage : sessionStorage;
       storage.setItem('auth_token', response.session.token);
-      storage.setItem('refresh_token', response.session.refreshToken);
+      if (response.session.refreshToken) {
+        storage.setItem('refresh_token', response.session.refreshToken);
+      }
       localStorage.setItem('user_role', response.user.role); // Store role for future validations
       
       return response;
@@ -216,7 +218,7 @@ const demoAccounts = {
         }
       },
       preferences: {
-        language: 'fr',
+        language: 'fr' as const,
         theme: 'light' as const,
         notifications: {
           email: true,
@@ -225,16 +227,22 @@ const demoAccounts = {
           assessmentReminders: false,
           progressUpdates: false
         },
+        accessibility: {
+          highContrast: false,
+          fontSize: 'medium' as const,
+          reducedMotion: false
+        },
         assessment: {
+          showHints: true,
+          autoAdvance: false,
+          timeLimit: true,
           allowAdaptive: true,
-          preferredDuration: 30,
-          allowVoiceInput: false,
-          showProgressBar: true,
-          immediateFeeback: false
+          preferredDuration: 30
         }
       },
       createdAt: new Date('2024-01-01'),
-      lastLoginAt: new Date()
+      updatedAt: new Date(),
+      isActive: true
     },
     password: 'admin123'
   },
@@ -258,7 +266,7 @@ const demoAccounts = {
         }
       },
       preferences: {
-        language: 'fr',
+        language: 'fr' as const,
         theme: 'light' as const,
         notifications: {
           email: true,
@@ -267,16 +275,22 @@ const demoAccounts = {
           assessmentReminders: true,
           progressUpdates: true
         },
+        accessibility: {
+          highContrast: false,
+          fontSize: 'medium' as const,
+          reducedMotion: false
+        },
         assessment: {
+          showHints: true,
+          autoAdvance: false,
+          timeLimit: true,
           allowAdaptive: true,
-          preferredDuration: 30,
-          allowVoiceInput: false,
-          showProgressBar: true,
-          immediateFeeback: true
+          preferredDuration: 30
         }
       },
       createdAt: new Date('2024-01-01'),
-      lastLoginAt: new Date()
+      updatedAt: new Date(),
+      isActive: true
     },
     password: 'conseiller123'
   },
@@ -300,7 +314,7 @@ const demoAccounts = {
         }
       },
       preferences: {
-        language: 'fr',
+        language: 'fr' as const,
         theme: 'light' as const,
         notifications: {
           email: true,
@@ -309,16 +323,22 @@ const demoAccounts = {
           assessmentReminders: false,
           progressUpdates: true
         },
+        accessibility: {
+          highContrast: false,
+          fontSize: 'medium' as const,
+          reducedMotion: false
+        },
         assessment: {
+          showHints: true,
+          autoAdvance: false,
+          timeLimit: true,
           allowAdaptive: true,
-          preferredDuration: 45,
-          allowVoiceInput: false,
-          showProgressBar: true,
-          immediateFeeback: false
+          preferredDuration: 45
         }
       },
       createdAt: new Date('2024-01-01'),
-      lastLoginAt: new Date()
+      updatedAt: new Date(),
+      isActive: true
     },
     password: 'createur123'
   },
@@ -342,7 +362,7 @@ const demoAccounts = {
         }
       },
       preferences: {
-        language: 'fr',
+        language: 'fr' as const,
         theme: 'light' as const,
         notifications: {
           email: true,
@@ -351,16 +371,22 @@ const demoAccounts = {
           assessmentReminders: true,
           progressUpdates: true
         },
+        accessibility: {
+          highContrast: false,
+          fontSize: 'large' as const,
+          reducedMotion: false
+        },
         assessment: {
+          showHints: true,
+          autoAdvance: true,
+          timeLimit: false,
           allowAdaptive: true,
-          preferredDuration: 20,
-          allowVoiceInput: false,
-          showProgressBar: true,
-          immediateFeeback: true
+          preferredDuration: 20
         }
       },
       createdAt: new Date('2024-01-01'),
-      lastLoginAt: new Date()
+      updatedAt: new Date(),
+      isActive: true
     },
     password: 'beneficiaire123'
   },
@@ -384,7 +410,7 @@ const demoAccounts = {
         }
       },
       preferences: {
-        language: 'fr',
+        language: 'fr' as const,
         theme: 'light' as const,
         notifications: {
           email: true,
@@ -393,16 +419,22 @@ const demoAccounts = {
           assessmentReminders: false,
           progressUpdates: false
         },
+        accessibility: {
+          highContrast: false,
+          fontSize: 'medium' as const,
+          reducedMotion: false
+        },
         assessment: {
+          showHints: false,
+          autoAdvance: false,
+          timeLimit: true,
           allowAdaptive: true,
-          preferredDuration: 30,
-          allowVoiceInput: false,
-          showProgressBar: false,
-          immediateFeeback: false
+          preferredDuration: 30
         }
       },
       createdAt: new Date('2024-01-01'),
-      lastLoginAt: new Date()
+      updatedAt: new Date(),
+      isActive: true
     },
     password: 'client123'
   }
@@ -469,10 +501,14 @@ async function mockLogin(email: string, password: string): Promise<{ user: User,
     }
 
     const mockSession: UserSession = {
+      id: 'session-' + Date.now(),
+      userId: demoAccount.user.id,
       user: demoAccount.user,
       token: 'mock_jwt_token_' + Date.now(),
       refreshToken: 'mock_refresh_token_' + Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h
+      createdAt: new Date(),
+      isActive: true,
       permissions,
     };
 
@@ -499,7 +535,7 @@ async function mockLogin(email: string, password: string): Promise<{ user: User,
       }
     },
     preferences: {
-      language: 'fr',
+      language: 'fr' as const,
       theme: 'light' as const,
       notifications: {
         email: true,
@@ -508,23 +544,33 @@ async function mockLogin(email: string, password: string): Promise<{ user: User,
         assessmentReminders: true,
         progressUpdates: true
       },
+      accessibility: {
+        highContrast: false,
+        fontSize: 'medium' as const,
+        reducedMotion: false
+      },
       assessment: {
+        showHints: true,
+        autoAdvance: true,
+        timeLimit: false,
         allowAdaptive: true,
-        preferredDuration: 20,
-        allowVoiceInput: false,
-        showProgressBar: true,
-        immediateFeeback: true
+        preferredDuration: 20
       }
     },
     createdAt: new Date('2024-01-01'),
-    lastLoginAt: new Date()
+    updatedAt: new Date(),
+    isActive: true
   };
 
   const mockSession: UserSession = {
+    id: 'session-' + Date.now(),
+    userId: mockUser.id,
     user: mockUser,
     token: 'mock_jwt_token_' + Date.now(),
     refreshToken: 'mock_refresh_token_' + Date.now(),
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h
+    createdAt: new Date(),
+    isActive: true,
     permissions: [
       { resource: 'assessment', actions: ['read', 'take'] },
       { resource: 'profile', actions: ['read', 'update'] },
@@ -542,10 +588,14 @@ async function mockRefreshToken(refreshToken: string): Promise<{ session: UserSe
   await new Promise(resolve => setTimeout(resolve, 500));
   
   const newSession: UserSession = {
+    id: 'session-' + Date.now(),
+    userId: 'user-current', // Will be updated from current state
     user: {} as User, // Will be filled from current state
     token: 'new_mock_jwt_token_' + Date.now(),
     refreshToken: refreshToken,
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    createdAt: new Date(),
+    isActive: true,
     permissions: [],
   };
 

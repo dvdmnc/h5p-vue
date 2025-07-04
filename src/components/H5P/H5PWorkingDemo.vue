@@ -111,6 +111,14 @@ import { ref, onMounted, nextTick, watch, computed } from 'vue'
 import VueEnhancedQuiz from './VueEnhancedQuiz.vue'
 import { getContentPath, getCdnUrl, getAbsoluteH5PConfig } from '@/utils/h5p'
 
+// Declare global H5P types
+declare global {
+  interface Window {
+    H5P: any;
+    H5PStandalone: any;
+  }
+}
+
 // Props
 interface Props {
   questionType?: string;
@@ -154,13 +162,37 @@ const onIframeError = () => {
 
 const checkH5PStandalone = async () => {
   try {
-    // Properly import H5P Standalone
-    const H5PStandaloneModule = await import('h5p-standalone')
-    const H5PStandalone = H5PStandaloneModule.default || H5PStandaloneModule
-    
-    h5pStandaloneAvailable.value = true
-    console.log('✅ H5P Standalone is available:', H5PStandalone)
-    return H5PStandalone
+    // Check if H5P is available via global window object
+    if (typeof window !== 'undefined') {
+      console.log('Checking H5P availability:', {
+        'window.H5P': typeof window.H5P,
+        'window.H5PStandalone': typeof window.H5PStandalone,
+        'H5P keys': Object.keys(window).filter(k => k.includes('H5P'))
+      });
+      
+      if (window.H5P && typeof window.H5P === 'function') {
+        h5pStandaloneAvailable.value = true
+        console.log('✅ H5P is available via window.H5P')
+        return window.H5P
+      } else if (window.H5PStandalone && typeof window.H5PStandalone === 'function') {
+        h5pStandaloneAvailable.value = true
+        console.log('✅ H5P is available via window.H5PStandalone')
+        return window.H5PStandalone
+      } else {
+        // Maybe it's a different property - let's try to find it
+        const h5pKeys = Object.keys(window).filter(k => k.toLowerCase().includes('h5p'));
+        for (const key of h5pKeys) {
+          if (typeof (window as any)[key] === 'function') {
+            h5pStandaloneAvailable.value = true
+            console.log(`✅ H5P is available via window.${key}`)
+            return (window as any)[key]
+          }
+        }
+        throw new Error('H5P not found on window object')
+      }
+    } else {
+      throw new Error('Window object not available')
+    }
   } catch (error) {
     console.error('❌ H5P Standalone not available:', error)
     h5pStandaloneAvailable.value = false
